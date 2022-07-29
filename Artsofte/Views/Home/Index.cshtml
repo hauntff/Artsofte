@@ -1,0 +1,85 @@
+﻿@using Artsofte.Models
+
+@{
+    ViewBag.Title = "Home Page";
+    var employees = ViewData["employees"] as List<EmployeesInfo>;
+}
+
+<style>
+    .container {
+        margin-top: 20px;
+    }
+
+    #add {
+        color: black;
+        text-decoration: underline;
+    }
+
+    .buttons button {
+        background-color: white;
+        border: none;
+    }
+    #cancel{
+        text-decoration:none;
+        text-align: center;
+        color: black;
+    }
+</style>
+<h2>A list of employees</h2>
+<div class="container">
+    @Html.ActionLink("ADD", "Add","Adding",null, new {id = "add"}) 
+</div>
+<div class="container">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Age</th>
+                <th>Department</th>
+                <th>Programming Language</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in employees)
+            {
+                <tr id="tr-@item.EmployeeID">
+                    <td>@item.Name</td>
+                    <td>@item.Surname</td>
+                    <td>@item.Age</td>
+                    <td>@item.Department</td>
+                    <td>@item.Programming_language</td>
+                    <td>
+                        <div class="buttons" style="display:grid">
+                            @Html.ActionLink("Change","Edit","Editing",new { employee_id = item.EmployeeID }, new { id = "cancel"})
+                            <button onclick="DeleteEmployee(@item.EmployeeID)">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<script>
+    function DeleteEmployee(employee_id) {
+        if (confirm("Are you sure?")) {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteEmployee", "Adding")',
+                dataType: 'json',
+                data: { employee_id: employee_id },
+                success: function (data) {
+                    $(`#tr-${employee_id}`).remove();
+                    alert(data);
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            })
+        }
+    }
+
+    
+
+</script>

@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewBag.Title = "Add";
+}
+@using Artsofte.Models
+@model EmployeeInfoModel
+<style>
+    #addingEmployee {
+        border: 1px, solid, black;
+        background-color: white;
+        border-radius: 0px;
+        justify-content: right
+    }
+
+    #cancel {
+        text-decoration: underline;
+        color: black;
+    }
+
+    .options {
+        text-align: right;
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    label {
+        margin-bottom: 10px;
+    }
+
+    .options, .inputs {
+        display: grid;
+        padding: 15px;
+    }
+
+    input {
+        width: -webkit-fill-available;
+    }
+
+    #department, #pl {
+        width: -webkit-fill-available;
+    }
+</style>
+<h2>Adding an employee</h2>
+<div class="container" style="display:flex; justify-content:center">
+    <div class="options col-lg-6">
+        <label>Name</label>
+        <label>Surname</label>
+        <label>Age</label>
+        <label>Department</label>
+        <label>Programming Language</label>
+
+    </div>
+    <div class="inputs col-lg-6">
+        <label><input type="text" class="form-control" id="name" /></label>
+        <label><input type="text" class="form-control" id="surname" /></label>
+        <label><input type="number" min="0" max="100" class="form-control" id="age" /></label>
+        <label>@Html.DropDownList("Choose a department", new SelectList(Model.Department, "id", "department_name"), new { @class = "form-control", id = "department" })</label>
+        <label>@Html.DropDownList("Choose a department", new SelectList(Model.Programming_Language, "id", "PL_name"), new { @class = "form-control", id = "pl" })</label>
+
+    </div>
+</div>
+<div class="container" style="display:flex; justify-content:center">
+    <div class="options col-lg-6">
+        <label>
+            <button id="addingEmployee" onclick="AddEmployee()">ADD</button>
+        </label>
+    </div>
+    <div class="inputs col-lg-6">
+        <label><a href="/" id="cancel">Cancel</a></label>
+    </div>
+</div>
+<script >
+    function AddEmployee() {
+        let name = $("#name").val();
+        let surname = $("#surname").val();
+        let age = $("#age").val();
+        let department = $("#department").val();
+        let pl = $("#pl").val();
+        //all is string
+        if (name == "" || surname == "" || age == "" || department == "" || pl == "") {
+            alert("Please, type all values");
+        }
+        else if (department === "0" || pl === "0") {
+            alert("Please, choose department or programming language");
+        }
+        else {
+            ageInt = parseInt(age);
+            departmentInt = parseInt(department);
+            plInt = parseInt(pl);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("AddEmployee", "Adding")',
+                dataType: 'json',
+                data: { name: name, surname: surname, age: ageInt, department_id: departmentInt, programming_language_id: plInt },
+                success: function (data) {
+                    alert(data);
+                },
+                error: function (data) {
+                    alert(data);
+                }
+            })
+        }
+    }
+</script>
+
+
